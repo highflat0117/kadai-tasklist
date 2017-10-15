@@ -1,22 +1,23 @@
-class TasklistsController < ApplicationController
+class TasksController < ApplicationController
+  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  
   def index
-    @tasklists = Tasklist.all
+    @tasks = Task.all
   end
 
   def show
-    @tasklist = Tasklist.find(params[:id])
   end
 
   def new
-    @tasklist = Tasklist.new
+    @task = Task.new
   end
 
   def create
-    @tasklist = Tasklist.new(tasklist_params)
+    @task = Task.new(task_params)
     
-    if @tasklist.save
+    if @task.save
       flash[:success] = 'Taskが正常に提出されました'
-      redirect_to @tasklist
+      redirect_to @task
     else
       flash.now[:danger] = 'Taskが提出されませんでした'
       render :new
@@ -24,15 +25,12 @@ class TasklistsController < ApplicationController
   end
 
   def edit
-    @tasklist = Tasklist.find(params[:id])
   end
 
   def update
-    @tasklist = Tasklist.find(params[:id])
-    
-    if @tasklist.update(tasklist_params)
+    if @task.update(task_params)
       flash[:success] = 'Taskは正常に更新されました'
-      redirect_to @tasklist
+      redirect_to @task
     else
       flash.now[:danger] = 'Taskは更新されませんでした'
       render :edit
@@ -40,18 +38,22 @@ class TasklistsController < ApplicationController
   end
 
   def destroy
-    @tasklist = Tasklist.find(params[:id])
-    @tasklist.destroy
+    @task.destroy
     
     flash[:success] = 'Taskは正常に削除されました'
-    redirect_to tasklists_url
+    redirect_to tasks_url
   end
   
   private
   
   #Strong Parameter
-  def tasklist_params
-    params.require(:tasklist).permit(:content, :status)
+  
+  def set_task
+    @task = Task.find(params[:id])
+  end
+  
+  def task_params
+    params.require(:task).permit(:content, :status)
   end
   
 end
